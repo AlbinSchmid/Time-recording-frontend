@@ -3,11 +3,11 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatSelectModule } from '@angular/material/select';
-import { timeInterval } from 'rxjs';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { ApiService } from '../../services/api.service';
 import { TimeRecord } from '../../interfaces/time-record';
+import Cookies from 'js-cookie';
 
 @Component({
   selector: 'app-form',
@@ -18,7 +18,7 @@ import { TimeRecord } from '../../interfaces/time-record';
     MatFormFieldModule,
     MatDatepickerModule,
     MatSelectModule,
-    MatButtonModule
+    MatButtonModule,
   ],
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss']
@@ -41,6 +41,7 @@ export class FormComponent {
   ];
 
   today: Date = new Date();
+  staffNameLastSelected: string = '';
 
   /**
    * Angular lifecycle hook that is called after the component's data-bound properties have been initialized.
@@ -52,6 +53,47 @@ export class FormComponent {
   ngOnInit(): void {
     this.getProjects();
     this.getStaffNames();
+
+    const savedId = Cookies.get('savedStaffId');
+    if (savedId) {
+      this.staffNameLastSelected = String(savedId);
+    }
+  }
+
+  /**
+   * Handles the staff selection change event.
+   * 
+   * This method is triggered when the user selects a different staff member from the dropdown.
+   * It performs the following actions:
+   * 1. Fetches time records associated with the newly selected user by calling `getTimeRecordsFromUser()`.
+   * 2. Stores the selected staff ID in a cookie named 'savedStaffId' for persistence.
+   *
+   * @param event - The selection change event containing the newly selected staff ID.
+   */
+  changedStaff(event: MatSelectChange): void {
+    this.getTimeRecordsFromUser();
+    Cookies.set('savedStaffId', event.value);
+  }
+
+  /**
+   * Fetches time records for the user specified in `formData.staff_id` by sending a GET request
+   * to the time records API endpoint. The retrieved records are assigned to `apiService.timeRecords`.
+   * Logs an error to the console if the request fails.
+   *
+   * @remarks
+   * This method constructs the request URL by appending a `search` query parameter with the user's staff ID.
+   *
+   * @returns void
+   */
+  getTimeRecordsFromUser(): void {
+    this.apiService.sendGetRequest(this.apiService.TIME_RECORD_URL + '?search=' + this.formData.staff_id).subscribe({
+      next: (response) => {
+        this.apiService.timeRecords = response;
+      },
+      error: (error) => {
+        console.error('Error fetching time entries:', error);
+      }
+    });
   }
 
   /**
@@ -107,7 +149,7 @@ export class FormComponent {
       },
     });
   }
-  
+
   /**
    * Handles the form submission event.
    * 
@@ -137,11 +179,12 @@ export class FormComponent {
    * Logs errors to the console if the request fails.
    */
   saveTimeRecord(form: NgForm, formatedData: any): void {
-    this.apiService.sendPostRequest(this.apiService.TIME_ENTRIES_URL, formatedData).subscribe({
+    this.apiService.sendPostRequest(this.apiService.TIME_RECORD_URL, formatedData).subscribe({
       next: (response: TimeRecord) => {
         this.apiService.timeRecords.push(response);
         console.log('Time entry created successfully:', response);
         form.resetForm();
+        this.formData.date = new Date();
       },
       error: (error) => {
         console.error('Error creating time entry:', error);

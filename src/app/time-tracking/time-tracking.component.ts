@@ -10,17 +10,5 @@ import { ApiService } from '../shared/services/api.service';
   styleUrl: './time-tracking.component.scss'
 })
 export class TimeTrackingComponent {
-  apiService = inject(ApiService);
-
-  ngOnInit(): void {
-    this.apiService.sendGetRequest(this.apiService.TIME_ENTRIES_URL).subscribe({
-      next: (response) => {
-        this.apiService.timeRecords = response;
-      },
-      error: (error) => {
-        console.error('Error fetching time entries:', error);
-      }
-    });
-  }
 
 }

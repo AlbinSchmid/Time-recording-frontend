@@ -1,9 +1,11 @@
 <form (ngSubmit)="onSubmit(form)" #form="ngForm">
-    <mat-form-field>
+    <mat-form-field appearance="fill">
         <mat-label>Name</mat-label>
-        <mat-select [(ngModel)]="formData.staff_id" name="name" required>
-            @for (staff of staffNames; track staff) {
-            <mat-option [value]="staff.value">{{staff.viewValue}}</mat-option>
+        <mat-select [(ngModel)]="formData.staff_id" name="name" required (selectionChange)="changedStaff($event)">
+            @for (staff of staffNames; track staff.value) {
+            <mat-option [value]="staff.value">
+                {{ staff.viewValue }}
+            </mat-option>
             }
         </mat-select>
     </mat-form-field>

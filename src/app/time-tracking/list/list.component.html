@@ -15,5 +15,16 @@
         <span>{{ record.time_start }}</span>
         <span>{{ record.time_end || '-' }}</span>
         <span>{{ record.comment || '-' }}</span>
+        <button mat-flat-button *ngIf="record.time_end == null" (click)="editRecord(record.id)">End Work</button>
+        <button class="delete-button" mat-flat-button (click)="deleteRecord(record.id)">Delete</button>
+    </div>
+
+    <div class="list-total">
+        <span>Total Projects</span>
+        <span>{{ getTotalProjects() }}</span>
+    </div>
+    <div class="list-total">
+        <span>Total Time</span>
+        <span>{{ getTotalHours() }}</span>
     </div>
 </section>
