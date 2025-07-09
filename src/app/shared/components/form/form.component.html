@@ -1,0 +1,40 @@
+<form (ngSubmit)="onSubmit(form)" #form="ngForm">
+    <mat-form-field>
+        <mat-label>Name</mat-label>
+        <mat-select [(ngModel)]="formData.staff_name" name="name" required>
+            @for (staff of staffNames; track staff) {
+            <mat-option [value]="staff.value">{{staff.viewValue}}</mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Choose a date</mat-label>
+        <input matInput [matDatepicker]="picker" [(ngModel)]="formData.date" name="date" required>
+        <mat-hint>MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Uhrzeit</mat-label>
+        <input matInput type="time" [(ngModel)]="formData.date" name="time" required>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Project</mat-label>
+        <mat-select [(ngModel)]="formData.project_name" name="project" required>
+            @for (project of projects; track project) {
+            <mat-option [value]="project.value">{{project.viewValue}}</mat-option>
+            }
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Leave a comment</mat-label>
+        <textarea matInput placeholder="Ex. It makes me feel..." [(ngModel)]="formData.comment"
+            name="comment"></textarea>
+    </mat-form-field>
+
+    <button type="submit" mat-flat-button [disabled]="!form.valid">Submit</button>
+</form>
