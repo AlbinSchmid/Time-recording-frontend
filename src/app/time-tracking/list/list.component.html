@@ -1,0 +1,19 @@
+<section>
+    <div class="list-header">
+        <span>Mitarbeiter</span>
+        <span>Projekt</span>
+        <span>Datum</span>
+        <span>Start</span>
+        <span>Ende</span>
+        <span>Kommentar</span>
+    </div>
+
+    <div class="list-row" *ngFor="let record of apiService.timeRecords; let i = index">
+        <span>{{ record.staff_name }}</span>
+        <span>{{ record.project_name }}</span>
+        <span>{{ record.date }}</span>
+        <span>{{ record.time_start }}</span>
+        <span>{{ record.time_end || '-' }}</span>
+        <span>{{ record.comment || '-' }}</span>
+    </div>
+</section>

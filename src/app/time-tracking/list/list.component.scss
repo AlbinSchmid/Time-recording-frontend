@@ -1,0 +1,12 @@
+.list-header, .list-row {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  padding: 8px;
+  border-bottom: 1px solid #ccc;
+}
+
+.list-header {
+  font-weight: bold;
+  background-color: #f0f0f0;
+}
